@@ -2,11 +2,14 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const port = 5000;
+// env config
+const env=require('dotenv');
+env.config();
+
+const port = process.env.PORT ;;
 app.use(cors());
 app.use(express.json());
-const uri =
-  "mongodb+srv://mynulsakil:JwpLqHtzb5QWYELB@cluster0.bpciahf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.DB_URI;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -20,7 +23,7 @@ async function run() {
     await client.connect();
     console.log("DB Connected Successfully");
     const database = client.db("easy-bazar-db");
-    const shoeCollection = database.collection("shoes");
+    const productCollection = database.collection("products");
     const userCollection = database.collection("users");
     // // product routes
     // app.post("/shoes", async (req, res) => {
