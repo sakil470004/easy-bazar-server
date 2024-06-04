@@ -95,7 +95,7 @@ async function run() {
       const products = await cursor.toArray();
       res.json(products);
     });
-    app.get("/products/:id",verifyToken, async (req, res) => {
+    app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
       const product = await productCollection.findOne({
         _id: new ObjectId(id),
