@@ -45,6 +45,18 @@ async function run() {
 
       res.json(result);
     });
+    app.patch("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedProduct = req.body;
+      const { _id, ...restUpdate } = updatedProduct;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: restUpdate,
+      };
+      const result = await productCollection.updateOne(filter, updateDoc, options);
+      res.json(result);
+    });
 
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
