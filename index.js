@@ -3,10 +3,10 @@ const app = express();
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 // env config
-const env=require('dotenv');
+const env = require("dotenv");
 env.config();
 
-const port = process.env.PORT ;;
+const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 const uri = process.env.DB_URI;
@@ -24,7 +24,20 @@ async function run() {
     console.log("DB Connected Successfully");
     const database = client.db("easy-bazar-db");
     const productCollection = database.collection("products");
+    const categoryCollection = database.collection("categories");
     const userCollection = database.collection("users");
+    // category routes
+    app.post("/categories", async (req, res) => {
+      const category = req.body;
+      console.log(category);
+      const result = await categoryCollection.insertOne(category);
+      res.json(result);
+    });
+    app.get("/categories", async (req, res) => {
+      const cursor = categoryCollection.find({});
+      const categories = await cursor.toArray();
+      res.json(categories);
+    });
     // // product routes
     // app.post("/shoes", async (req, res) => {
     //   const shoe = req.body;
