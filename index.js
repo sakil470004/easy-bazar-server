@@ -5,7 +5,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 // env config
 const env = require("dotenv");
 env.config();
-
+const jwt = require("jsonwebtoken");
 const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
@@ -17,10 +17,28 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+function createToken(user) {
+  return jwt.sign(
+    {
+      email: user.email,
+    },
+    "mysecretkey"
+  );
+}
+async function verifyToken(req, res, next) {
+  const token = await req.headers.authorization.split(" ")[1];
+  await jwt.verify(token, "mysecretkey", (err, decoded) => {
+    if (err) {
+      res.status(401).send({ status: "Invalid token" });
+      return;
+    }
+    next();
+  });
+}
 
 async function run() {
   try {
-     client.connect();
+    client.connect();
     console.log("DB Connected Successfully");
     const database = client.db("easy-bazar-db");
     const productCollection = database.collection("products");
