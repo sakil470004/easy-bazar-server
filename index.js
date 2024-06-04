@@ -41,7 +41,8 @@ async function run() {
     // product routes
     app.post("/products", async (req, res) => {
       const product = req.body;
-      const result = await productCollection.insertMany(product);
+      const result = await productCollection.insertOne(product);
+
       res.json(result);
     });
 
