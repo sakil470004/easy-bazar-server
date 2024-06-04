@@ -29,7 +29,6 @@ async function run() {
     // category routes
     app.post("/categories", async (req, res) => {
       const category = req.body;
-      console.log(category);
       const result = await categoryCollection.insertOne(category);
       res.json(result);
     });
@@ -40,17 +39,48 @@ async function run() {
     });
 
     // product routes
-   app.post("/products", async (req, res) => {
+    app.post("/products", async (req, res) => {
       const product = req.body;
-      const result = await productCollection.insertOne(product);
+      const result = await productCollection.insertMany(product);
       res.json(result);
     });
-   
+
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
       const products = await cursor.toArray();
       res.json(products);
     });
+    app.get("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const product = await productCollection.findOne({
+        _id: new ObjectId(id),
+      });
+      res.json(product);
+    });
+
+    // user routes
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const filter = { email: user.email };
+      if (user.email === "") {
+        res.status(400).send({ status: "Email  can not be empty" });
+        return;
+      }
+      const existingUser = await userCollection.findOne(filter);
+      if (existingUser) {
+        res.status(400).send({ status: "Success Email already exists" });
+        return;
+      }
+      const result = await userCollection.insertOne(user);
+      res.json({ status: "Success add user to" });
+    });
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find({});
+      const users = await cursor.toArray();
+      res.json(users);
+    });
+
     // // product routes
     // app.post("/shoes", async (req, res) => {
     //   const shoe = req.body;
