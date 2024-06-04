@@ -57,6 +57,11 @@ async function run() {
       const result = await productCollection.updateOne(filter, updateDoc, options);
       res.json(result);
     });
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await productCollection.deleteOne({ _id: new ObjectId(id) });
+      res.json(result);
+    });
 
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
