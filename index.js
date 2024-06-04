@@ -109,6 +109,18 @@ async function run() {
       const user = await userCollection.findOne({ email: email });
       res.json(user);
     });
+    app.patch("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const updatedUser = req.body;
+      const { _id, ...restUpdate } = updatedUser;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: restUpdate,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.json(result);
+    });
 
     // // product routes
     // app.post("/shoes", async (req, res) => {
