@@ -54,12 +54,18 @@ async function run() {
       const updateDoc = {
         $set: restUpdate,
       };
-      const result = await productCollection.updateOne(filter, updateDoc, options);
+      const result = await productCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.json(result);
     });
     app.delete("/products/:id", async (req, res) => {
       const id = req.params.id;
-      const result = await productCollection.deleteOne({ _id: new ObjectId(id) });
+      const result = await productCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
       res.json(result);
     });
 
@@ -97,6 +103,11 @@ async function run() {
       const cursor = userCollection.find({});
       const users = await cursor.toArray();
       res.json(users);
+    });
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      res.json(user);
     });
 
     // // product routes
