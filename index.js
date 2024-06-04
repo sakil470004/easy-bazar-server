@@ -9,14 +9,7 @@ const jwt = require("jsonwebtoken");
 const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
-const uri = process.env.DB_URI;
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+
 function createToken(user) {
   return jwt.sign(
     {
@@ -35,6 +28,16 @@ async function verifyToken(req, res, next) {
     next();
   });
 }
+
+const uri = process.env.DB_URI;
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
 
 async function run() {
   try {
@@ -103,7 +106,7 @@ async function run() {
     // user routes
     app.post("/users", async (req, res) => {
       const user = req.body;
-      console.log(user);
+      const token = createToken(user);
       const filter = { email: user.email };
       if (user.email === "") {
         res.status(400).send({ status: "Email  can not be empty" });
@@ -111,11 +114,11 @@ async function run() {
       }
       const existingUser = await userCollection.findOne(filter);
       if (existingUser) {
-        res.status(400).send({ status: "Success Email already exists" });
+        res.status(400).send({ status: "Success Email already exists",token });
         return;
       }
       const result = await userCollection.insertOne(user);
-      res.json({ status: "Success add user to" });
+      res.json({ status: "Success add user to DB", token });
     });
     app.get("/users", async (req, res) => {
       const cursor = userCollection.find({});
