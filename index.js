@@ -38,6 +38,19 @@ async function run() {
       const categories = await cursor.toArray();
       res.json(categories);
     });
+
+    // product routes
+   app.post("/products", async (req, res) => {
+      const product = req.body;
+      const result = await productCollection.insertOne(product);
+      res.json(result);
+    });
+   
+    app.get("/products", async (req, res) => {
+      const cursor = productCollection.find({});
+      const products = await cursor.toArray();
+      res.json(products);
+    });
     // // product routes
     // app.post("/shoes", async (req, res) => {
     //   const shoe = req.body;
