@@ -66,7 +66,7 @@ async function run() {
 
       res.json(result);
     });
-    app.patch("/products/:id", async (req, res) => {
+    app.patch("/products/:id",verifyToken, async (req, res) => {
       const id = req.params.id;
       const updatedProduct = req.body;
       const { _id, ...restUpdate } = updatedProduct;
@@ -82,7 +82,7 @@ async function run() {
       );
       res.json(result);
     });
-    app.delete("/products/:id", async (req, res) => {
+    app.delete("/products/:id",verifyToken, async (req, res) => {
       const id = req.params.id;
       const result = await productCollection.deleteOne({
         _id: new ObjectId(id),
