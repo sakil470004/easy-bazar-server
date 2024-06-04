@@ -60,7 +60,7 @@ async function run() {
     });
 
     // product routes
-    app.post("/products", async (req, res) => {
+    app.post("/products",verifyToken, async (req, res) => {
       const product = req.body;
       const result = await productCollection.insertOne(product);
 
