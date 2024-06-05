@@ -45,6 +45,7 @@ async function run() {
     const database = client.db("easy-bazar-db");
     const productCollection = database.collection("products");
     const categoryCollection = database.collection("categories");
+    const cartCollection = database.collection("cart");
     const userCollection = database.collection("users");
     // category routes
     app.post("/categories", async (req, res) => {
@@ -57,7 +58,8 @@ async function run() {
       const categories = await cursor.toArray();
       res.json(categories);
     });
-
+    
+ 
     // product routes
     app.post("/products", verifyToken, async (req, res) => {
       const product = req.body;
@@ -141,8 +143,6 @@ async function run() {
       const result = await userCollection.updateOne(filter, updateDoc, options);
       res.json(result);
     });
-
-    
   } finally {
     // await client.close();
   }
