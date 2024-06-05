@@ -45,7 +45,6 @@ async function run() {
     const database = client.db("easy-bazar-db");
     const productCollection = database.collection("products");
     const categoryCollection = database.collection("categories");
-    const cartCollection = database.collection("cart");
     const userCollection = database.collection("users");
     // category routes
     app.post("/categories", async (req, res) => {
