@@ -46,6 +46,7 @@ async function run() {
     const productCollection = database.collection("products");
     const categoryCollection = database.collection("categories");
     const userCollection = database.collection("users");
+    const orderCollection = database.collection("orders");
     // category routes
     app.post("/categories", async (req, res) => {
       const category = req.body;
@@ -57,8 +58,26 @@ async function run() {
       const categories = await cursor.toArray();
       res.json(categories);
     });
-    
- 
+
+    //  order routes
+    app.post("/orders", verifyToken, async (req, res) => {
+      const order = req.body;
+      const result = await orderCollection.insertOne(order);
+      res.json(result);
+    });
+   // filter by email order
+   app.get("/orders/:email", async (req, res) => {
+    const email = req.params.email;
+    const order = await orderCollection.find({ email: email }).toArray();
+    res.json(order);
+  });
+    app.get("/orders", async (req, res) => {
+      const cursor = orderCollection.find({});
+      const orders = await cursor.toArray();
+      res.json(orders);
+    });
+   
+
     // product routes
     app.post("/products", verifyToken, async (req, res) => {
       const product = req.body;
